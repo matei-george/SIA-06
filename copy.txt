@@ -1,0 +1,1 @@
+\copy transport.stg_public_transport_delays FROM 'calea_ta/public_transport_delays.csv' WITH (FORMAT csv, HEADER true);
