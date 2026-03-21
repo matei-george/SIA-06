@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  # Sursa SQL 1: Oracle XE (Hub-ul central pentru arhitectura federată)
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle_smartcity
+    ports:
+      - "1521:1521"
+      - "8080:8080" # Necesar pentru Oracle APEX (Laboratorul L5)
+    environment:
+      - ORACLE_PASSWORD=ParolaMaster2026
+
+  # Sursa SQL 2: PostgreSQL
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_smartcity
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=ParolaMaster2026
+
+  # Sursa NoSQL: MongoDB (pentru datele de la senzori/vreme)
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_smartcity
+    ports:
+      - "27017:27017"
