@@ -1,0 +1,22 @@
+1. Pornire MongoDB in mod Replica Set
+docker run -d --name mongo-smartcity -p 27017:27017 --network smart-city-net mongo:8.0 --replSet rs0
+
+2. Initializare Replica Set (obligatoriu pentru RESTHeart v8)
+docker exec -it mongo-smartcity mongosh --eval "rs.initiate()"
+
+3. Import Date Smart Mobility (5000 inregistrari)
+
+docker cp "smart_mobility_dataset.csv" mongo-smartcity:/data.csv
+docker exec -it mongo-smartcity mongoimport --db smartcity_db --collection traffic_sensors --type csv --headerline --file /data.csv
+
+4.Pornire RESTHeart
+docker run -d -p 8080:8080 --name restheart-sii --network smart-city-net ^
+  -e RHO_MONGO_URI="mongodb://mongo-smartcity:27017/?replicaSet=rs0" ^
+  -e RHO_PLUGINS_ARGS_MONGOACLAUTHORIZER_ACL_DB="restheart" ^
+  -e RHO_PLUGINS_ARGS_MONGOIDENTITYMANAGER_USERS_DB="restheart" ^
+  -e RHO_MONGO_MOUNTS="[{'what':'smartcity_db','where':'/api'}]" ^
+  softinstigate/restheart:8.1.0
+  
+  
+5.Stergere containere -la final
+docker rm -f mongo-smartcity restheart-sii
