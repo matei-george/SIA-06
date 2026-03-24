@@ -54,6 +54,3 @@ CREATE TABLE TRANSPORT_STATS (
     ON_TIME_PERF NUMBER         -- Eficiența serviciului
 );
 ```
-- **Optimizarea pentru Analiză:** Tabelul `TRANSPORT_STATS` a fost simplificat masiv față de fișierul original (peste 130 coloane) pentru a păstra doar indicatorii relevanți (KPIs) pentru un model de tip Smart City.
-
-**Ar fi util să-ți generez și câteva comentarii SQL (Description) pe care să le adaugi la coloane, ca să arate documentația și mai „pro”?** (Profesorii adoră când tabelele sunt bine documentate direct în cod).
