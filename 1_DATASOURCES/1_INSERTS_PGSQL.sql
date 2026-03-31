@@ -30,7 +30,7 @@ FROM transport.stg_public_transport_delays;
 INSERT INTO transport.metrics
 SELECT 
     trip_id, 
-    NULLIF(event_type, 'None'), -- Transformăm textul 'None' în NULL real
+    NULLIF(event_type, 'None'), 
     NULLIF(event_attendance_est, 'None')::INTEGER, 
     traffic_congestion_index::INTEGER, 
     holiday::BOOLEAN, 

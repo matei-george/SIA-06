@@ -1,0 +1,8 @@
+ORDS
+ords --config C:\config serve
+
+PostgREST
+postgrest.exe tutorial.conf
+
+MongoDB
+java -jar restheart.jar -o conf-override.conf

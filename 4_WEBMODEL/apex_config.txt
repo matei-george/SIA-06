@@ -1,0 +1,28 @@
+BEGIN
+    -- Pasul 1: Activare Schema (Resetare și activare)
+    ORDS.ENABLE_SCHEMA(p_enabled => TRUE,
+                       p_schema => 'FDBO',
+                       p_url_mapping_type => 'BASE_PATH',
+                       p_url_mapping_pattern => 'fdbo',
+                       p_auto_rest_auth => FALSE);
+
+    -- Pasul 2: Activare Vedere Postgres
+    -- Folosim p_object_alias, așa cum apare în fișierele profesorului
+    ORDS.ENABLE_OBJECT(p_enabled => TRUE,
+                       p_schema => 'FDBO',
+                       p_object => 'V_FED_TRANSPORT_FINAL',
+                       p_object_type => 'VIEW',
+                       p_object_alias => 'transport_pg',
+                       p_auto_rest_auth => FALSE);
+
+    -- Pasul 3: Activare Vedere MongoDB
+    ORDS.ENABLE_OBJECT(p_enabled => TRUE,
+                       p_schema => 'FDBO',
+                       p_object => 'V_FED_ORACLE_MONGO_COMPLEX',
+                       p_object_type => 'VIEW',
+                       p_object_alias => 'monitorizare_mongo',
+                       p_auto_rest_auth => FALSE);
+
+    commit;
+END;
+/
