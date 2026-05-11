@@ -1,0 +1,61 @@
+
+---
+
+## 📋 Lista Endpoint-uri Proiect P2-SDA
+
+### 1. Access Model (Surse de Date)
+
+Aceste microservicii expun datele brute din bazele de date initiale sub forma de endpoint-uri REST.
+
+#### A. 
+
+SQL Service (PostgreSQL) - Port 8090 
+
+* **Status Check**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/ping](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/ping)
+
+* **Trips View**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/TripsPostgresView](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/TripsPostgresView)
+
+* **Metrics View**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/MetricsPostgresView](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/MetricsPostgresView)
+
+* **Weather View**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/WeatherPostgresView](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/WeatherPostgresView)
+
+* **Customer View**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/CustomerView](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/CustomerView)
+
+* **Customer Data (Paginated)**: [http://localhost:8090/DSA-SQL-JDBCService/rest/transport/CustomerViewData?fetch_offset=0&fetch_size=10](https://www.google.com/search?q=http://localhost:8090/DSA-SQL-JDBCService/rest/transport/CustomerViewData%3Ffetch_offset%3D0%26fetch_size%3D10)
+
+#### B. 
+
+DOC Service (CSV/Excel) - Port 8097 
+
+* **Routes View**: [http://localhost:8097/DSA-DOC-CSVService/rest/transport/TripsView](https://www.google.com/search?q=http://localhost:8097/DSA-DOC-CSVService/rest/transport/TripsView)
+
+#### C. 
+
+NoSQL Service (MongoDB) - Port 8093 
+
+* **Sensors View**: [http://localhost:8093/DSA-NoSQL-MongoDBService/rest/transport/TrafficSensorsView](https://www.google.com/search?q=http://localhost:8093/DSA-NoSQL-MongoDBService/rest/transport/TrafficSensorsView)
+
+---
+
+### 2. Integration Model (SparkSQL Service)
+
+Stratul de virtualizare care unifica sursele de mai sus intr-o baza de date virtuala.
+
+* 
+**Spark Thrift Server (JDBC)**: `jdbc:hive2://localhost:10000/default` 
+
+
+* **Spark Web UI (Monitorizare)**: [http://localhost:4040](https://www.google.com/search?q=http://localhost:4040)
+
+---
+
+### 3. WEB Model (Serviciul Final si Interfata)
+
+Punctul final de livrare a datelor analitice catre utilizator.
+
+* **Dashboard Interactiv (UI)**: [http://localhost:8096/DSA-WEB-RESTService/index.html](https://www.google.com/search?q=http://localhost:8096/DSA-WEB-RESTService/index.html)
+* 
+**Analytical Master REST Endpoint**: [http://localhost:8096/DSA-WEB-RESTService/rest/OLAP/AnalyticalTransportMaster](https://www.google.com/search?q=http://localhost:8096/DSA-WEB-RESTService/rest/OLAP/AnalyticalTransportMaster) 
+
+
+* **Status Check (Ping)**: [http://localhost:8096/DSA-WEB-RESTService/rest/OLAP/ping](https://www.google.com/search?q=http://localhost:8096/DSA-WEB-RESTService/rest/OLAP/ping)

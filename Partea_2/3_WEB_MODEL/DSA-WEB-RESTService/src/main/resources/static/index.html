@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Transport Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --border: #334155;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            margin: 0; padding: 20px;
+        }
+        .container { max-width: 1200px; margin: auto; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;
+        }
+        h1 { margin: 0; font-weight: 600; color: var(--accent); letter-spacing: -1px; }
+
+        .btn-refresh {
+            background: var(--accent); color: var(--bg-color); border: none;
+            padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-refresh:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            border: 1px solid var(--border); text-align: center;
+        }
+        .stat-val { font-size: 24px; font-weight: 600; display: block; margin-top: 5px; }
+
+        .table-container {
+            background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);
+            overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #334155; padding: 15px; font-size: 0.85rem; text-transform: uppercase; color: #94a3b8; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        tr:hover { background: #1e293b; }
+
+        .badge {
+            padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;
+            font-weight: 600; text-transform: uppercase;
+        }
+        .delayed { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .ontime { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .loading { text-align: center; padding: 40px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Smart Transport Analytics</h1>
+        <button class="btn-refresh" onclick="fetchData()">Refresh Data</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">Total Calatorii <span class="stat-val" id="totalCount">0</span></div>
+        <div class="stat-card">In Intarziere <span class="stat-val" id="delayedCount" style="color:var(--danger)">0</span></div>
+        <div class="stat-card">Status Sistem <span class="stat-val" style="color:var(--success)">Activ</span></div>
+    </div>
+
+    <div class="table-container">
+        <table id="transportTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tip Transport</th>
+                <th>Ruta (CSV)</th>
+                <th>Statie Origine</th>
+                <th>Status</th>
+                <th>Senzor (Mongo)</th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    async function fetchData() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">Se incarca datele din SparkSQL...</td></tr>';
+
+        try {
+            // URL-ul este relativ la context-path-ul tau (/DSA-WEB-RESTService)
+            const response = await fetch('rest/OLAP/AnalyticalTransportMaster');
+            const data = await response.json();
+
+            tbody.innerHTML = '';
+            document.getElementById('totalCount').innerText = data.length;
+            let delayed = 0;
+
+            data.forEach(item => {
+                if(item.is_delayed) delayed++;
+
+                const row = `
+                    <tr>
+                        <td style="font-weight:600; color:var(--accent)">${item.tripId}</td>
+                        <td>${item.transportType}</td>
+                        <td>${item.routeLongName || '<span style="color:#64748b">N/A</span>'}</td>
+                        <td>${item.originStation}</td>
+                        <td>
+                            <span class="badge ${item.is_delayed ? 'delayed' : 'ontime'}">
+                                ${item.is_delayed ? 'Intarziat' : 'La Timp'}
+                            </span>
+                        </td>
+                        <td>${item.mongo_sensor_index !== null ? item.mongo_sensor_index : '<span style="color:#64748b">Fara Date</span>'}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+            document.getElementById('delayedCount').innerText = delayed;
+
+        } catch (error) {
+            tbody.innerHTML = '<tr><td colspan="6" style="color:var(--danger); text-align:center; padding:20px;">Eroare la conectare! Verifica daca microserviciile si Spark sunt pornite.</td></tr>';
+            console.error('Error:', error);
+        }
+    }
+
+    window.onload = fetchData;
+</script>
+
+</body>
+</html>
